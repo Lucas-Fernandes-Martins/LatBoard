@@ -1,0 +1,215 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width">
+  <title>LatBoard</title>
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      }
+    };
+    </script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+  <link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+  
+</head>
+
+<body onload="after_load()">
+
+<div id="frame">
+
+<h1>LatBoard</h1>
+
+<br />
+
+<div id="lst">
+    <div class="cells">
+    <ol>
+      <todo-item
+        v-for="item in List"
+        v-bind:todo="item"
+        v-bind:selected_id="selected_id"
+        v-bind:key="item.id"
+        v-bind:update="update"
+        v-bind:del_element="del_element"
+      ></todo-item>
+    </ol>
+  </div>
+    <button id="add" v-on:click="add()">Add new cell</button>
+  </div>
+
+  <script>
+    Vue.component('todo-item', {
+  delimiters:["[[", "]]"],
+  props: ['todo', 'selected_id', 'update', 'del_element'],
+  template: "<div class='container' v-on:click.self='update(todo.id)'><div id='output' class='output'></div><button class='remove' v-on:click='del_element(todo.id)'>Remove</button><button class='edit' v-on:click='update(todo.id)'>Edit</button></div>"
+});
+
+var lst = new Vue({
+  delimiters:["[[", "]]"],
+  el: '#lst',
+  data: {
+    List: [
+      { id: 0, text: '' },
+      { id: 1, text: '' },
+      { id: 2, text: '' }
+    ],
+    selected_id: 0,
+  },
+  methods: {      update: function update(id){
+          this.selected_id = id;
+          render.selected_id = id;
+          document.getElementById("input").value = this.List[id]["text"];
+
+          document.getElementById("input").focus();
+
+          let divs = document.getElementsByClassName("container");
+
+          for(let i = 0; i < divs.length; i++){
+            if(i == id){
+              divs[i].style.border = "3px solid black";
+            }else{
+              divs[i].style.border = "1px solid grey";
+            }
+          }
+
+      },
+      add: function add(){
+          var size = this.List.length;
+          this.List.push({id:size, text:""});
+          this.selected_id = size;
+          document.getElementById("input").value = "";
+      },
+      del_element: function del_element(id){
+        let index;
+        for(var i = 0; i < this.List.length; i++){
+          if(this.List[i]["id"] == id){
+              index = i;
+          }
+        }
+
+        this.List = this.List.slice(0, index).concat(this.List.slice(index+1, this.List.length));
+
+        console.log(index);
+
+        for(var i = index; i < this.List.length; i++){
+            console.log("Antes:" + this.List[i]["id"]);
+            this.List[i]["id"] += -1;
+            console.log("Depois:" +  this.List[i]["id"]);
+        }
+        
+        update = document.getElementsByClassName("output");
+
+        for(var i = 0; i < update.length -1; i++){
+            update[i].innerHTML = this.List[i]["text"];
+        }
+
+      }
+  }
+});
+
+</script>
+
+<div class="bottom" id="render">
+    <textarea @keydown="convert()" @keyup="convert()" placeholder="Type your equations..." id="input" rows="15" cols="10">
+    [[current_text]]</textarea>
+    <br>
+    <div class="right">
+    <input id="render_button" type="button" value="Update" v-on:click="convert()" />
+</div>
+</div>
+<script>
+    var render = new Vue({
+    delimiters: ["[[", "]]"],
+    el: "#render",
+    data: {
+        selected_id : lst.selected_id,
+        current_text: ""
+    },
+    methods:{
+      convert: function convert() {
+      
+      //
+      //  Get the TeX input
+      //
+      var input = document.getElementById("input").value.trim();
+
+      output = document.getElementsByClassName('output')[lst.selected_id];
+
+      output.innerHTML = input;
+
+      lst.List[lst.selected_id]["text"] = input;
+
+      MathJax.typeset();
+
+      /*
+      var input = document.getElementById("input").value.trim();
+
+      lst.List[lst.selected_id]["text"] = input;
+      
+      //
+      //  Disable the display and render buttons until MathJax is done
+      //
+      var button = document.getElementById("render");
+      button.disabled = true;
+      //
+      //  Clear the old output
+      //
+      output = document.getElementsByClassName('output')[lst.selected_id];
+      output.innerHTML = '';
+      //
+      //  Reset the tex labels (and automatic equation numbers, though there aren't any here).
+      //  Get the conversion options (metrics and display settings)
+      //  Convert the input to CommonHTML output and use a promise to wait for it to be ready
+      //    (in case an extension needs to be loaded dynamically).
+      //
+      MathJax.texReset();
+      var options = MathJax.getMetricsFor(output);
+      options.display = 0;
+      MathJax.tex2chtmlPromise(input, options).then(function (node) {
+        //
+        //  The promise returns the typeset node, which we add to the output
+        //  Then update the document to include the adjusted CSS for the
+        //    content of the new equation.
+        //
+        output.appendChild(node);
+        MathJax.startup.document.clear();
+        MathJax.startup.document.updateDocument();
+      }).catch(function (err) {
+        //
+        //  If there was an error, put the message into the output instead
+        //
+        output.appendChild(document.createElement('pre')).appendChild(document.createTextNode(err.message));
+      }).then(function () {
+        //
+        //  Error or not, re-enable the display and render buttons
+        //
+        button.disabled = false;
+      });
+      */
+    }
+    }
+});
+</script>
+
+<script>
+  function after_load(){
+    document.getElementsByClassName("container")[0].style.border = "3px solid black";
+    document.getElementById("input").focus();
+  }
+</script>
+
+</div>
+
+</body>
+
+</html>
