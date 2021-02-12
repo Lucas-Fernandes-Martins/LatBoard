@@ -137,6 +137,8 @@ h3{
     height: 20em;
     overflow: auto;
     bottom: 50%;
+    left: 0%;
+    width: 95%;
   }
 
   .connect{
@@ -148,4 +150,35 @@ h3{
     color: white;
     background-color: blueviolet;
     right: 5px;
+  }
+
+  #menu{
+    position: fixed;
+    top: 10%;
+    width: 100%;
+    background-color: white;
+    height: 30px;
+
+}
+
+  #title{
+    width: 60%;
+    height: 30px;
+    float: left;
+  }
+
+  #save{
+    width: fit-content;
+    float:left;
+    height: 30px;
+    border: 0px solid white;
+    color: white;
+    background-color: blueviolet;
+  }
+
+  #lst{
+    position: fixed;
+    top: 20%;
+    width: 100%;
+    left: 15px;
   }
