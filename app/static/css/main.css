@@ -1,7 +1,40 @@
+.header{
+  width: 100%;
+  height: 60px;
+  margin-left: 0px;
+  margin-top: 0px;
+  position: fixed;
+  background-color: indigo;
+  overflow: hidden;
+}
+
 h1{
   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 
   text-align: center;
+
+  float: left;
+
+  color: white;
+
+  position: fixed;
+
+  left: 10px;
+}
+
+h3{
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+
+  color:coral;
+
+  position: relative;;
+
+  float: left;
+
+  padding-left: 10px;
+
+  padding-top: 5px;
+
 }
 
 .bottom{
@@ -44,23 +77,36 @@ h1{
     height: 30px;
     float: center;
     text-align: center;
+    background-color: white;
+    border: 1px solid black;
   }
 
   #add{
     width: fit-content;
     height: 30px;
-    left: 15%;
+    left: 0;
     margin-left: 7%;
+    background-color: white;
+    border: 1px solid black;
+    position: fixed;
+    bottom: 20%;
   }
 
   .remove{
     display: none;
     float: right;
+    background-color: rgb(231, 52, 52);
+    border: 1px solid black;
+    border-radius: 3px;
   }
 
   .edit{
     display: none;
     float: right;
+    background-color: rgb(6, 226, 6);
+    border: 1px solid black;
+    border-radius: 3px;
+
   }
 
   .container{
@@ -87,7 +133,19 @@ h1{
   }
 
   .cells{
+    position: relative;
     height: 20em;
     overflow: auto;
+    bottom: 50%;
   }
 
+  .connect{
+    display: block;
+    float:right;
+    width: 100px;
+    height: 60px;
+    border: 0px solid white;
+    color: white;
+    background-color: blueviolet;
+    right: 5px;
+  }

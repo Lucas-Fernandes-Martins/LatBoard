@@ -28,39 +28,11 @@
 <div id="frame">
 <div class="header">
 <h1>LatBoard</h1>
-<button id="connect" class="connect" v-on:click="login">[[text]]</button>
+<h3>Write beautiful Latex online</h3>
 </div>
-
-<script>
-  var connect = new Vue({
-    delimiters:["[[", "]]"],
-    el: "#connect",
-    data: {
-        text : "Connect",
-        user_name: "{{user_info['given_name']}}",
-        logged: "{{logged}}"
-    },
-    methods: {
-      login: function login(){
-        window.location.href = "{{url_for('login_screen')}}";
-      }
-    }
-  });
-
-
-  
-  function update_info(){
-      if(connect.logged == 1){
-          connect.text = "Hi, " + connect.user_name;
-      }
-    }
-  
-  update_info();
-
-</script>
 <br>
 <br>
-<br/>
+<br />
 
 <div id="lst">
     <div class="cells">

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<head>
+<link rel="stylesheet" href="{{url_for('static', filename='css/login.css')}}">
+</head>
+
+<body>
+<html>
+    <div>
+        <a class="google" href="{{url_for('google_auth.login')}}"><img src="{{url_for('static', filename='assets/google.png')}}"></a>
+        <br>
+        <p>Or <a href="{{url_for('google_auth.logout')}}">Logout</a></p>
+    </div>
+</body>
+</html>
