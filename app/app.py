@@ -22,6 +22,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
+
 class boards(db.Model):
     __bind_key__ = 'boards'
     _id = db.Column("id", db.Integer, primary_key=True)
@@ -51,7 +52,20 @@ def table():
 
     return render_template("users.html", values=usr)
 
-@app.route("/boards")
+@app.route("/boards_user")
+def boards_user():
+    content = boards.query.filter_by(user_id=session["user_id"]).all()
+    data = list()
+    for i in range(len(content)):
+        dic = dict()
+        dic["id"] = i
+        dic["title"] = content[i].title
+        dic["content"] = content[i].content
+        data.append(dic)
+    
+    return render_template("boards_user.html", values=json.dumps(data))
+
+@app.route("/table_boards")
 def table_boards():
     values = boards.query.all()
 
@@ -71,6 +85,8 @@ def login():
     else:
         session.pop("user_id", None)
         session.pop("user_name", None)
+        session.pop("title", None)
+        session.pop("content", None)
     return redirect(url_for("main"))
 
 @app.route("/backup")
@@ -85,28 +101,53 @@ def login_screen():
 def update():
     content = request.json
     board = boards(content["title"], session["user_name"], session["user_id"], content["content"])
-    db.session.add(board)
-    db.session.commit()
+    exists = boards.query.filter_by(title=content["title"]).first()
+    if exists is None:
+        db.session.add(board)
+        db.session.commit()
+    else:
+        exists.content = content["content"]
+        db.session.commit()
 
     return redirect(url_for("main"))
+
+@app.route("/resume", methods=['POST', 'GET'])
+def resume():
+    data = request.json
+
+    title = data["title"]
+
+    content = data["content"]
+
+    print(title)
+
+    print(content)
+
+    session["title"] = title
+
+    session["content"] = content
+
+    return redirect(url_for("boards_user"))
 
 @app.route("/", methods=['POST', 'GET'])
 def main():
     logged = 0
-    if google_auth.is_logged_in():
+    given_name = None
+    title = None
+    content = [
+      { "id": 0, "text": '' },
+      { "id": 1, "text": '' },
+      { "id": 2, "text": '' }
+    ]
+    if "user_name" in session:
         logged = 1
-        user_info = google_auth.get_user_info()
-    else:
-        user_info = None
+        given_name = session["user_name"]
 
-    if request.method == 'POST':
-        title = request.form["title"]
-        board = boards(title, session["user_name"], session["user_id"], "people")
-        db.session.add(board)
-        db.session.commit()
+    if "title" in session:
+        title = session["title"]
+        content = session["content"]
 
+    return render_template("index.html", given_name = given_name, logged=logged, title=title, content=json.dumps(content))
 
-
-    return render_template("index.html", user_info=user_info, logged=logged)
 
 

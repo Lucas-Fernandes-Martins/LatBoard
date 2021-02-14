@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/list.css')}}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <div class="header">
+        <h1>LatBoard</h1>
+        <button id="connect" class="connect" v-on:click="login">[[text]]</button>
+        </div>
+    <div class="container" id="list">
+    <item-list v-for="item in Boards" v-bind:board="item" v-bind:key="item.id" v-bind:render="render">
+    </item-list>
+</div>
+<script>
+    Vue.component('item-list', {
+        delimiters: ["[[", "]]"],
+        props: ['board', 'render'],
+        template: "<div class='item' v-on:click='render(board.title, board.content)'><h3>[[board.title]]</h3><p class='content'>[[board.content]]</p></div>"
+    });
+
+    var list = new Vue({
+        delimiters: ["[[", "]]"],
+        el: "#list",
+        data: {
+            Boards: JSON.parse('{{values|safe}}')
+        },
+        methods:{
+            render: function render(title, content){
+                var data = [];
+                lines = content.split("/c");
+                for(var i = 0; i < lines.length; i++){
+                    var dict = {};
+                    dict["id"] = i;
+                    dict["text"] = lines[i];
+                    data.push(dict);
+                }
+                axios.post('/resume', {
+        title: title, content: data}).then(response => window.location.href = "{{url_for('main')}}");
+        }
+        }
+    });
+
+    console.log(list.Boards);
+</script>
+</body>
+
+
+</html>

@@ -31,7 +31,7 @@
 <button id="connect" class="connect" v-on:click="login">[[text]]</button>
 </div>
 <div id="menu">
-  <input name="title" type="text" id="title" placeholder="Your board's name...">
+  <input v-model="title" type="text" id="title" placeholder="Your board's name..." value="">
   <button id="save" v-on:click="save">Save</button>
 </div>
 <script>
@@ -39,8 +39,8 @@
     delimiters:["[[", "]]"],
     el: "#menu",
     data:{
-      title: "",
-      content: ""
+      title: "{{title}}",
+      content: "",
     },
     methods:{
       save:  function save () {
@@ -50,8 +50,10 @@
           this.content += lst.List[i].text + "/c";
         }
 
+        cleaned = this.content.replace(/\\/g, "|");
+  
         axios.post('/update', {
-        title: this.title, content:this.content});
+        title: this.title, content:cleaned});
     }
   }
     });
@@ -62,7 +64,7 @@
     el: "#connect",
     data: {
         text : "Connect",
-        user_name: "{{user_info['given_name']}}",
+        user_name: "{{given_name}}",
         logged: "{{logged}}"
     },
     methods: {
@@ -107,18 +109,14 @@
     Vue.component('todo-item', {
   delimiters:["[[", "]]"],
   props: ['todo', 'selected_id', 'update', 'del_element'],
-  template: "<div class='container' v-on:click.self='update(todo.id)'><div id='output' class='output'></div><button class='remove' v-on:click='del_element(todo.id)'>Remove</button><button class='edit' v-on:click='update(todo.id)'>Edit</button></div>"
+  template: "<div class='container' v-on:click.self='update(todo.id)'><div id='output' class='output' value='item.text'></div><button class='remove' v-on:click='del_element(todo.id)'>Remove</button><button class='edit' v-on:click='update(todo.id)'>Edit</button></div>"
 });
 
 var lst = new Vue({
   delimiters:["[[", "]]"],
   el: '#lst',
   data: {
-    List: [
-      { id: 0, text: '' },
-      { id: 1, text: '' },
-      { id: 2, text: '' }
-    ],
+    List: JSON.parse('{{content|safe}}'),
     selected_id: 0,
   },
   methods: {      update: function update(id){
@@ -172,6 +170,19 @@ var lst = new Vue({
       }
   }
 });
+
+function set_values(){
+  values = document.getElementsByClassName("output");
+
+  dic = JSON.parse('{{content|safe}}');
+
+  for(var i = 0; i < values.length; i++){
+    var cleaned = lst.List[i]["text"].replace("|", "\\");
+    values[i].innerHTML = cleaned;
+  }
+}
+
+set_values();
 
 </script>
 
@@ -261,6 +272,9 @@ var lst = new Vue({
   function after_load(){
     document.getElementsByClassName("container")[0].style.border = "3px solid black";
     document.getElementById("input").focus();
+    if(menu.title == "None"){
+      menu.title = "";
+    }
   }
 </script>
 
