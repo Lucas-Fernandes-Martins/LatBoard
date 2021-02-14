@@ -33,6 +33,7 @@
 <div id="menu">
   <input v-model="title" type="text" id="title" placeholder="Your board's name..." value="">
   <button id="save" v-on:click="save">Save</button>
+  <button id="myBoards" v-on:click="board_list">My Boards</button>
 </div>
 <script>
   var menu = new Vue({
@@ -41,9 +42,13 @@
     data:{
       title: "{{title}}",
       content: "",
+      logged:"{{logged}}"
     },
     methods:{
       save:  function save () {
+        if(this.logged == 0){
+          alert("Connect (Log in/ Sign up) to save board");
+        }
         this.title = document.getElementById("title").value;
 
         for(var i = 0; i < lst.List.length; i++){
@@ -54,6 +59,9 @@
   
         axios.post('/update', {
         title: this.title, content:cleaned});
+    },
+    board_list: function board_list(){
+      window.location.href = "{{url_for('boards_user')}}";
     }
   }
     });

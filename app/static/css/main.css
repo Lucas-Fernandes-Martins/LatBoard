@@ -176,6 +176,16 @@ h3{
     background-color: blueviolet;
   }
 
+  #myBoards{
+    width: fit-content;
+    float:left;
+    height: 30px;
+    border: 0px solid white;
+    color: white;
+    background-color: grey;
+    margin-left: 5px;
+  }
+
   #lst{
     position: fixed;
     top: 20%;
