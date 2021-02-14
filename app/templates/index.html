@@ -122,7 +122,7 @@ var lst = new Vue({
   methods: {      update: function update(id){
           this.selected_id = id;
           render.selected_id = id;
-          document.getElementById("input").value = this.List[id]["text"];
+          document.getElementById("input").value = this.List[id]["text"].split("|").join("\\");
 
           document.getElementById("input").focus();
 
@@ -164,9 +164,11 @@ var lst = new Vue({
         update = document.getElementsByClassName("output");
 
         for(var i = 0; i < update.length -1; i++){
-            update[i].innerHTML = this.List[i]["text"];
+            update[i].innerHTML = this.List[i]["text"].split("|").join("\\");
         }
-
+        
+        MathJax.typeset();
+        
       }
   }
 });
@@ -177,7 +179,7 @@ function set_values(){
   dic = JSON.parse('{{content|safe}}');
 
   for(var i = 0; i < values.length; i++){
-    var cleaned = lst.List[i]["text"].replace("|", "\\");
+    var cleaned = lst.List[i]["text"].split("|").join("\\");
     values[i].innerHTML = cleaned;
   }
 }

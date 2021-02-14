@@ -33,7 +33,7 @@
             render: function render(title, content){
                 var data = [];
                 lines = content.split("/c");
-                for(var i = 0; i < lines.length; i++){
+                for(var i = 0; i < lines.length-1; i++){
                     var dict = {};
                     dict["id"] = i;
                     dict["text"] = lines[i];
