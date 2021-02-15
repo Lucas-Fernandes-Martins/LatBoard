@@ -15,8 +15,8 @@ AUTHORIZATION_SCOPE ='openid email profile'
 AUTH_REDIRECT_URI = "http://latboard.herokuapp.com/google/auth"
 #BASE_URI = "http://127.0.0.1:5000/login"
 BASE_URI = "http://latboard.herokuapp.com/login"
-CLIENT_ID = "984673657656-ihts22jnav09239cr7d8gvtdd8m52eg1.apps.googleusercontent.com"
-CLIENT_SECRET = "-JjnwIUwoHbHKcj-ZDaOmWCf"
+CLIENT_ID = "paste_your_client_id_here"
+CLIENT_SECRET = "paste_your_client_secret_here"
 
 AUTH_TOKEN_KEY = 'auth_token'
 AUTH_STATE_KEY = 'auth_state'
