@@ -96,18 +96,28 @@ def backup():
 @app.route("/login_screen")
 def login_screen():
     return render_template("login.html")
-
+ 
 @app.route("/update", methods=['POST', 'GET'])
 def update():
     content = request.json
     board = boards(content["title"], session["user_name"], session["user_id"], content["content"])
     exists = boards.query.filter_by(title=content["title"]).first()
+    session["title"] = content["title"]
+    session["content"] = content["data"]
+    print("content:" + str(session["content"]))
     if exists is None:
         db.session.add(board)
         db.session.commit()
     else:
         exists.content = content["content"]
         db.session.commit()
+
+    return redirect(url_for("main"))
+
+@app.route("/new_board")
+def new_board():
+    session.pop("title", None)
+    session.pop("content", None)
 
     return redirect(url_for("main"))
 

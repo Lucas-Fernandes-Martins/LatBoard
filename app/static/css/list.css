@@ -57,3 +57,11 @@ h3{
     width: 100%;
     top: 15%;
 }
+
+.new_board{
+  background-color: blueviolet;
+  color: white;
+  width: fit-content;
+  height: 30px;
+  border: 1px solid black;
+}

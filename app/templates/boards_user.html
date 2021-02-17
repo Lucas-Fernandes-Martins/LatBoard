@@ -13,9 +13,15 @@
         <button id="connect" class="connect" v-on:click="login">[[text]]</button>
         </div>
     <div class="container" id="list">
+        <button class="new_board" onclick="new_b()">New Board</button>
     <item-list v-for="item in Boards" v-bind:board="item" v-bind:key="item.id" v-bind:render="render">
     </item-list>
 </div>
+<script>
+    function new_b(){
+        window.location.href = "{{url_for('new_board')}}";
+    }
+</script>
 <script>
     Vue.component('item-list', {
         delimiters: ["[[", "]]"],

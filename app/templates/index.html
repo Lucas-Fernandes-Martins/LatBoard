@@ -34,6 +34,7 @@
   <input v-model="title" type="text" id="title" placeholder="Your board's name..." value="">
   <button id="save" v-on:click="save">Save</button>
   <button id="myBoards" v-on:click="board_list">My Boards</button>
+  <p id="login_message">Please connect to save your boards</p>
 </div>
 <script>
   var menu = new Vue({
@@ -46,19 +47,27 @@
     },
     methods:{
       save:  function save () {
-        if(this.logged == 0){
-          alert("Connect (Log in/ Sign up) to save board");
-        }
         this.title = document.getElementById("title").value;
 
         for(var i = 0; i < lst.List.length; i++){
           this.content += lst.List[i].text + "/c";
         }
 
+        var data = [];
+
+        for(var i = 0; i < lst.List.length; i++){
+          var dict = {};
+          dict.id = lst.List[i].id;
+          dict.text = lst.List[i].text.replace(/\\/g, "|");
+          console.log(lst.List[i].id);
+          console.log(lst.List[i].text);
+          data.push(dict);
+        }
+
         cleaned = this.content.replace(/\\/g, "|");
   
         axios.post('/update', {
-        title: this.title, content:cleaned});
+        title: this.title, content:cleaned, data:data});
     },
     board_list: function board_list(){
       window.location.href = "{{url_for('boards_user')}}";
@@ -87,6 +96,10 @@
   function update_info(){
       if(connect.logged == 1){
           connect.text = "Hi, " + connect.user_name;
+      }else{
+          document.getElementById("save").style.display = "none";
+          document.getElementById("myBoards").style.display = "none";
+          document.getElementById("login_message").style.display = "block";
       }
     }
   
@@ -280,6 +293,7 @@ set_values();
 
 <script>
   function after_load(){
+
     document.getElementsByClassName("container")[0].style.border = "3px solid black";
     document.getElementById("input").focus();
     if(menu.title == "None"){
