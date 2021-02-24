@@ -52,8 +52,20 @@ def table():
 
     return render_template("users.html", values=usr)
 
+@app.route("/delete", methods=['POST', 'GET'])
+def delete():
+    title = request.json["title"]
+
+    boards.query.filter_by(title=title).delete()
+
+    db.session.commit()
+
+    return render_template("boards_user.html")
+
 @app.route("/boards_user")
 def boards_user():
+    given_name = None
+    logged = 0
     content = boards.query.filter_by(user_id=session["user_id"]).all()
     data = list()
     for i in range(len(content)):
@@ -62,8 +74,12 @@ def boards_user():
         dic["title"] = content[i].title
         dic["content"] = content[i].content
         data.append(dic)
-    
-    return render_template("boards_user.html", values=json.dumps(data))
+
+    if "user_name" in session:
+        logged = 1
+        given_name = session["user_name"]
+
+    return render_template("boards_user.html", values=json.dumps(data), given_name=given_name, logged=logged)
 
 @app.route("/table_boards")
 def table_boards():

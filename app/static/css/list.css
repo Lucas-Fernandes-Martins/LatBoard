@@ -45,7 +45,7 @@ h3{
     width: 95%;
     background-color: #9c00ad;
     color: white;
-    height: 100px;
+    height: 120px;
     left: 15px;
     margin-top: 15px;
 }
@@ -64,4 +64,28 @@ h3{
   width: fit-content;
   height: 30px;
   border: 1px solid black;
+}
+
+.edit{
+  position: relative;
+  float:right;
+  background-color: indigo;
+  color: white;
+  width: fit-content;
+  height: 30px;
+  border: none;
+  margin-right: 5px;
+  margin-top: 0px;
+}
+
+.delete{
+  position: relative;
+  float:right;
+  background-color: indigo;
+  color: white;
+  width: fit-content;
+  height: 30px;
+  border: none;
+  margin-right: 5px;
+  margin-top: 0px;
 }

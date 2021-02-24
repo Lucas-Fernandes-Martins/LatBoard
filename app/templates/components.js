@@ -179,3 +179,4 @@ var menu = new Vue({
       menu.title = "";
     }
   }
+

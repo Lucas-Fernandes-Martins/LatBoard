@@ -14,7 +14,7 @@
         </div>
     <div class="container" id="list">
         <button class="new_board" onclick="new_b()">New Board</button>
-    <item-list v-for="item in Boards" v-bind:board="item" v-bind:key="item.id" v-bind:render="render">
+    <item-list v-for="item in Boards" v-bind:board="item" v-bind:key="item.id" v-bind:render="render" v-bind:del_board="del_board">
     </item-list>
 </div>
 <script>
@@ -22,38 +22,9 @@
         window.location.href = "{{url_for('new_board')}}";
     }
 </script>
-<script>
-    Vue.component('item-list', {
-        delimiters: ["[[", "]]"],
-        props: ['board', 'render'],
-        template: "<div class='item' v-on:click='render(board.title, board.content)'><h3>[[board.title]]</h3><p class='content'>[[board.content]]</p></div>"
-    });
 
-    var list = new Vue({
-        delimiters: ["[[", "]]"],
-        el: "#list",
-        data: {
-            Boards: JSON.parse('{{values|safe}}')
-        },
-        methods:{
-            render: function render(title, content){
-                var data = [];
-                lines = content.split("/c");
-                for(var i = 0; i < lines.length-1; i++){
-                    var dict = {};
-                    dict["id"] = i;
-                    dict["text"] = lines[i];
-                    data.push(dict);
-                }
-                axios.post('/resume', {
-        title: title, content: data}).then(response => window.location.href = "{{url_for('main')}}");
-        }
-        }
-    });
-
-    console.log(list.Boards);
-</script>
 </body>
 
+<script>{% include 'list_components.js' %}</script>
 
 </html>
